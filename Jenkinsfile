@@ -16,7 +16,7 @@ pipeline {
     stage ('Check-Git-Secrets') {
       steps {
         sh 'rm trufflehog || true'
-        sh 'docker run gesellix/trufflehog --json https://github.com/cehkunal/webapp.git > trufflehog'
+        sh 'docker run gesellix/trufflehog --json https://github.com/ganeshvs12/webapp.git > trufflehog'
         sh 'cat trufflehog'
       }
     }
@@ -50,7 +50,7 @@ pipeline {
     stage ('Deploy-To-Tomcat') {
             steps {
            sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@13.232.202.25:/prod/apache-tomcat-8.5.39/webapps/webapp.war'
+                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@18.208.163.109:/prod/apache-tomcat-9.0.73/webapps/webapp.war'
               }      
            }       
     }
