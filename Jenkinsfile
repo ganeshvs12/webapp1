@@ -22,14 +22,7 @@ pipeline {
       }
     }
     
-      stage ('SAST') {
-      steps {
-        withSonarQubeEnv('sonar') {
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    }
+  
     
        stage ('Build') {
       steps {
@@ -37,12 +30,14 @@ pipeline {
        }
     }
     
-      stage ('Deploy-To-Tomcat') {
-            steps {
-           sshagent(['tomcat']) {
-                sh 'scp -o StrictHostKeyChecking=no target/*.war ubuntu@18.206.253.71:/prod/apache-tomcat-9.0.73/webapps/webapp.war'
-              }      
-           }       
+   
+  
+    stage ('DAST') {
+      steps {
+        sshagent(['zap']) {
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@54.234.49.62 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://100.26.112.43:8080/webapp/" || true'
+        }
+      }
     }
     
     
